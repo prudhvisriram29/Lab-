@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Font Awesome -->
+    <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+    rel="stylesheet"
+    />
+    <!-- MDB -->
+    <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css"
+    rel="stylesheet"
+    />
+    
+    <link rel="shortcut icon" href="https://upload.wikimedia.org/wikipedia/en/a/a3/Logo_of_Andhra_Loyola_Institute_of_Engineering_and_Technology.png" type="image/x-icon">
+</head>
+<body style="background-color: #eeee;">
+    <section style="background-color: #eee;">
+        <div class="container py-5">
+          <div class="row">
+            <div class="col">
+              <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4">
+                <ol class="breadcrumb mb-0 d-flex" style="justify-content: space-between;">
+                  <li class="breadcrumb-item">Welcome to <b>ALIET CampuSync</b>👋</li>
+                  <li class="breadcrumb-item"><a href="/Campusync-dashboard" style="text-decoration: none;">🧑‍💻Admin</a></li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+      
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card mb-4">
+                <div class="card-body text-center">
+                  <img src="https://upload.wikimedia.org/wikipedia/en/a/a3/Logo_of_Andhra_Loyola_Institute_of_Engineering_and_Technology.png" alt="avatar"
+                    class="rounded-circle img-fluid" style="width: 150px;">
+                  <h5 class="my-3">ALIET CampuSync</h5>
+                  <p class="text-muted mb-4">Discover departments, report computer issues, and help keep ALIET's tech resources up-to-date</p>
+                  <div class="d-flex justify-content-center mb-2">
+                    <a href="https://www.aliet.ac.in/" target="_blank"><button type="button" class="btn btn-outline-primary ms-1">Visit website↗️</button></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8">
+              <div class="card mb-4">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Website Status</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0 d-flex" style="align-items: center;"><span style="font-size: 12px;">🟢</span>Active</p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Total Branches</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0 d-flex" style="align-items: center;"><%= labs.length %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Total Labs</p>
+                    </div>
+                    <div class="col-sm-9">
+                        <% let count = 0; %>
+                          <% for (i=0;i<labs.length;i++) { %>
+                            <% count += labs[i].labs %>
+                          <% } %>
+                      <p class="text-muted mb-0 d-flex" style="align-items: center;"><%= count %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                        <% let count1 = 0; %>
+                        <% for (i=0;i<labs.length;i++) { %>
+                          <% for (let j=1;j<=labs[i].labs;j++){ %>
+                            <% count1 += labs[i]["lab" + j + "s"] %>
+                          <% } %>
+                        <% } %>
+                      <p class="mb-0">Total Systems</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0 d-flex" style="align-items: center;"><%= count1 %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Reported</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><%= issues.length %></p>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <p class="mb-0">Report an Issue</p>
+                    </div>
+                    <div class="col-sm-9">
+                      <p class="text-muted mb-0"><button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info">Report📝</button></p>
+                      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Report an Issue</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Branch</th>
+                                        <td>
+                                            <select name="branch" id="branchSelect" class="px-4 py-2" style="border: none; border-radius: 8px;background-color: rgb(224, 224, 224);" onchange="updateLabsDropdown();updatesysDropdown()">
+                                                <% for (let i = 0; i < labs.length; i++) { %>
+                                                    <option value="<%= i %>"><%= labs[i].branch %></option>
+                                                <% } %>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Labs</th>
+                                        <td>
+                                            <select name="labs" id="labsSelect" class="px-4 py-2" style="border: none; border-radius: 8px;background-color: rgb(224, 224, 224);" onchange="updatesysDropdown()">
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Systems</th>
+                                        <td>
+                                            <div id="sysno" style="display: flex;flex-wrap: wrap;"></div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <style>
+                                        .system-button {
+                                            width: 50px;
+                                            height: 50px;
+                                            border: none;
+                                            padding: 0;
+                                            position: relative;
+                                            background-color: transparent;
+                                            background-image: url('/images/sys.svg');
+                                            background-repeat: no-repeat;
+                                            background-position: center;
+                                            background-size: cover;
+                                            display: inline-block;
+                                            margin-right: 10px;
+                                            cursor: pointer;
+                                        }
+                                        
+                                        .system-button.selected {
+                                            background-color: transparent;
+                                            background-image: url('/images/seletedsys.svg');
+                                        }
+                                        
+                                        .number-overlay {
+                                            position: absolute;
+                                            left: 50%;
+                                            top: 50%;
+                                            transform: translate(-50%, -50%);
+                                            color: rgb(0, 0, 0);
+                                            font-weight: bold;
+                                            user-select: none;
+                                        }
+                                        </style>
+                                        
+                                        <script>
+                                            let labs = <%- JSON.stringify(labs) %>;
+                                            let issues = <%- JSON.stringify(issues) %>;
+
+                                            function updateLabsDropdown() {
+                                                let branchIndex = document.getElementById('branchSelect').value;
+                                                let labsDropdown = document.getElementById('labsSelect');
+                                                labsDropdown.innerHTML = '';
+                                            
+                                                if (labs[branchIndex] && labs[branchIndex].labs) {
+                                                    for (let j = 1; j <= labs[branchIndex].labs; j++) {
+                                                        let lab = labs[branchIndex]["lab" + j];
+                                                        let option = new Option(lab, j); // Assign lab index as value
+                                                        labsDropdown.add(option);
+                                                    }
+                                                }
+                                                updatesysDropdown(); // Update systems dropdown after labs dropdown is populated
+                                            }
+                                            
+                                            function updatesysDropdown() {
+    let branchSelect = document.getElementById('branchSelect');
+    let labsSelect = document.getElementById('labsSelect');
+    let branch = branchSelect.options[branchSelect.selectedIndex].text;
+    let lab = labsSelect.options[labsSelect.selectedIndex].text;
+    let sysCount = parseInt(labs[branchSelect.selectedIndex]["lab" + (labsSelect.selectedIndex + 1) + "s"]); // Adjusted to use selectedIndex
+    let sysnoDiv = document.getElementById('sysno');
+    sysnoDiv.innerHTML = '';
+
+
+    for (let i = 1; i <= sysCount; i++) {
+        if (i % 5 === 0 && i > 1) {
+            sysnoDiv.appendChild(document.createElement('br'));
+        }
+
+        let input = document.createElement('input');
+        input.type = 'button';
+        input.className = 'system-button';
+        input.value = `${i}`;
+        input.id = `system-${i}`;
+        input.name = `system-${i}`;
+
+        let isReported = issues.some(issue => 
+            issue.branch === branch && 
+            issue.lab === lab && 
+            parseInt(issue.sysno) === i // Simplified assuming sysno is directly an integer
+        );
+
+        if (isReported) {
+            input.disabled = true;
+        }
+
+        input.onclick = function() { toggleButtonSelection(this.id); };
+
+        sysnoDiv.appendChild(input);
+    }
+}
+
+
+                                            
+                                            function toggleButtonSelection(id) {
+                                                const allInputs = document.querySelectorAll('.system-button');
+                                                let selectedInput = document.getElementById(id);
+                                                let isSelected = selectedInput.classList.contains('selected');
+
+                                                // Toggle the selection state of the clicked button
+                                                if (isSelected) {
+                                                    // If it was selected, deselect it and enable all buttons
+                                                    allInputs.forEach(input => {
+                                                        input.disabled = false; // Enable the button
+                                                        input.classList.remove('selected'); // Ensure no button is marked as selected
+                                                    });
+                                                } else {
+                                                    // If it was not selected, first deselect and disable all, then select and enable the clicked one
+                                                    allInputs.forEach(input => {
+                                                        input.disabled = true; // Disable the button
+                                                        input.classList.remove('selected'); // Remove 'selected' class from all buttons
+                                                    });
+                                                    selectedInput.disabled = false; // Enable the clicked button
+                                                    selectedInput.classList.add('selected'); // Mark only the clicked button as selected
+                                                }
+                                            }
+
+
+                                            
+                                            window.onload = function() {
+                                                updateLabsDropdown(); // Populate labs dropdown on page load
+                                            };
+                                            </script>
+
+                                    <tr>
+                                        <th>Issue</th>
+                                        <td>
+                                            <div class="form-floating">
+                                                <textarea class="form-control" placeholder="Enter your issue" name="issue" id="floatingTextarea"></textarea>
+                                                <label for="floatingTextarea">Issue</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                            
+                                </tbody>
+                            </table>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="submit" id="submitSelection" class="btn btn-info d-flex align-centers" style="gap: 5px;">Report📝</button>
+                            </div>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+</body>
+<script>
+    document.getElementById('submitSelection').addEventListener('click', () => {
+    const branchSelect = document.getElementById('branchSelect');
+    const labsSelect = document.getElementById('labsSelect');
+    const selectedSystems = document.querySelectorAll('.system-button.selected');
+    const issueTextarea = document.getElementById('floatingTextarea'); // Assuming the ID is 'floatingTextarea'
+
+    const branch = branchSelect.options[branchSelect.selectedIndex].text;
+    const lab = labsSelect.options[labsSelect.selectedIndex].text;
+    const systems = Array.from(selectedSystems).map(btn => btn.value);
+    const issue = issueTextarea.value; // Get the text from the textarea
+
+    // Sending the data to the server
+    fetch('/report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ branch, lab, systems, issue }), // Include 'issue' in the JSON payload
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        alert("Issue was successfully sent")
+        window.location.reload();
+    })
+});
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</html>
