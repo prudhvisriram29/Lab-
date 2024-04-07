@@ -105,7 +105,7 @@ app.post('/admin',async(req, res) =>{
 app.get("/Campusync-dashboard",isAuth,async(req, res)=>{
     let labs = await Labs.find();
     let issues = await Issues.find();
-    res.render('Campusyncadmin',{labs: labs,issues: issues});
+    res.render('campusyncadmin',{labs: labs,issues: issues});
 })
 
 app.post("/add-branch",isAuth, async (req, res) => {
