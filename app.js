@@ -60,9 +60,9 @@ const labs = new mongoose.Schema({
 const Labs = mongoose.model('labs',labs);
 
 const issue = new mongoose.Schema({
-    branch: {type: String},
-    lab: {type: String},
-    sysno: {type: Number},
+    branch: {type: String, required:true},
+    lab: {type: String, required:true},
+    sysno: {type: Number, required:true},
     issue: {type: String},
 })
 

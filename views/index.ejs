@@ -142,6 +142,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                      <th>Status</th>
+                                      <td>
+                                          <p id="status"></p>
+                                      </td>
+                                  </tr>
+                                    <tr>
                                         <th>Systems</th>
                                         <td>
                                             <div id="sysno" style="display: flex;flex-wrap: wrap;"></div>
@@ -189,79 +195,101 @@
                                                 let branchIndex = document.getElementById('branchSelect').value;
                                                 let labsDropdown = document.getElementById('labsSelect');
                                                 labsDropdown.innerHTML = '';
-                                            
+                                                
                                                 if (labs[branchIndex] && labs[branchIndex].labs) {
-                                                    for (let j = 1; j <= labs[branchIndex].labs; j++) {
+                                                  for (let j = 1; j <= labs[branchIndex].labs; j++) {
                                                         let lab = labs[branchIndex]["lab" + j];
                                                         let option = new Option(lab, j); // Assign lab index as value
                                                         labsDropdown.add(option);
                                                     }
                                                 }
                                                 updatesysDropdown(); // Update systems dropdown after labs dropdown is populated
-                                            }
+                                              }
+                                              
+                                              function updatesysDropdown() {
+                                                let status = document.getElementById('status');
+                                                let branchSelect = document.getElementById('branchSelect');
+                                                let labsSelect = document.getElementById('labsSelect');
+                                                let branch = branchSelect.options[branchSelect.selectedIndex].text;
+                                                let lab = labsSelect.options[labsSelect.selectedIndex].text;
+                                                let sysCount = parseInt(labs[branchSelect.selectedIndex]["lab" + (labsSelect.selectedIndex + 1) + "s"]); // Adjusted to use selectedIndex
+                                                let sysnoDiv = document.getElementById('sysno');
+                                                sysnoDiv.innerHTML = '';
+                                                count = 0;
+                                                for (let i = 1; i <= sysCount; i++) {
+                                                  if (i % 5 === 0 && i > 1) {
+                                                        sysnoDiv.appendChild(document.createElement('br'));
+                                                    }
+
+                                                    let input = document.createElement('input');
+                                                    input.type = 'button';
+                                                    input.className = 'system-button';
+                                                    input.value = `${i}`;
+                                                    input.id = `system-${i}`;
+                                                    input.name = `system-${i}`;
+                                                    let isReported = issues.some(issue => 
+                                                        issue.branch === branch && 
+                                                        issue.lab === lab && 
+                                                        parseInt(issue.sysno) === i // Simplified assuming sysno is directly an integer
+                                                    );
+
+                                                    if (isReported) {
+                                                      input.disabled = true;
+                                                      count += 1;
+                                                    }
+                                                    
+                                                    input.onclick = function() { toggleButtonSelection(this.id); };
+                                                    
+                                                    sysnoDiv.appendChild(input);
+                                                  }
+                                                  status.innerHTML = "Total: "+sysCount + " Not working: " + count;
+                                                }
+
+
                                             
-                                            function updatesysDropdown() {
-    let branchSelect = document.getElementById('branchSelect');
-    let labsSelect = document.getElementById('labsSelect');
-    let branch = branchSelect.options[branchSelect.selectedIndex].text;
-    let lab = labsSelect.options[labsSelect.selectedIndex].text;
-    let sysCount = parseInt(labs[branchSelect.selectedIndex]["lab" + (labsSelect.selectedIndex + 1) + "s"]); // Adjusted to use selectedIndex
-    let sysnoDiv = document.getElementById('sysno');
-    sysnoDiv.innerHTML = '';
+function toggleButtonSelection(id) {
+    const allInputs = document.querySelectorAll('.system-button');
+    let selectedInput = document.getElementById(id);
+    let isSelected = selectedInput.classList.contains('selected');
 
+    // Deselect current selection
+    if (isSelected) {
+        selectedInput.classList.remove('selected');
+        selectedInput.style.backgroundColor = ''; // Reset any custom styling
+    } else {
+        // First, reset all buttons to not selected
+        allInputs.forEach(input => {
+            input.classList.remove('selected');
+            input.style.backgroundColor = ''; // Reset any custom styling
+        });
+        // Mark the current as selected
+        selectedInput.classList.add('selected');
+        // selectedInput.style.backgroundColor = 'red'; // Example styling
+    }
 
-    for (let i = 1; i <= sysCount; i++) {
-        if (i % 5 === 0 && i > 1) {
-            sysnoDiv.appendChild(document.createElement('br'));
-        }
+    // Regardless of selection status, ensure correct buttons remain disabled/enabled
+    allInputs.forEach(input => {
+        let systemNumber = parseInt(input.id.replace('system-', ''));
+        let branchSelect = document.getElementById('branchSelect');
+        let labsSelect = document.getElementById('labsSelect');
+        let branch = branchSelect.options[branchSelect.selectedIndex].text;
+        let lab = labsSelect.options[labsSelect.selectedIndex].text;
 
-        let input = document.createElement('input');
-        input.type = 'button';
-        input.className = 'system-button';
-        input.value = `${i}`;
-        input.id = `system-${i}`;
-        input.name = `system-${i}`;
-
-        let isReported = issues.some(issue => 
-            issue.branch === branch && 
-            issue.lab === lab && 
-            parseInt(issue.sysno) === i // Simplified assuming sysno is directly an integer
+        let isReported = issues.some(issue =>
+            issue.branch === branch &&
+            issue.lab === lab &&
+            parseInt(issue.sysno) === systemNumber
         );
 
         if (isReported) {
             input.disabled = true;
+            // input.background-image = url('/images/seletedsys.svg'); // Keep reported systems disabled
+        } else {
+            input.disabled = false; // Re-enable non-reported systems
         }
-
-        input.onclick = function() { toggleButtonSelection(this.id); };
-
-        sysnoDiv.appendChild(input);
-    }
+    });
 }
 
-
-                                            
-                                            function toggleButtonSelection(id) {
-                                                const allInputs = document.querySelectorAll('.system-button');
-                                                let selectedInput = document.getElementById(id);
-                                                let isSelected = selectedInput.classList.contains('selected');
-
-                                                // Toggle the selection state of the clicked button
-                                                if (isSelected) {
-                                                    // If it was selected, deselect it and enable all buttons
-                                                    allInputs.forEach(input => {
-                                                        input.disabled = false; // Enable the button
-                                                        input.classList.remove('selected'); // Ensure no button is marked as selected
-                                                    });
-                                                } else {
-                                                    // If it was not selected, first deselect and disable all, then select and enable the clicked one
-                                                    allInputs.forEach(input => {
-                                                        input.disabled = true; // Disable the button
-                                                        input.classList.remove('selected'); // Remove 'selected' class from all buttons
-                                                    });
-                                                    selectedInput.disabled = false; // Enable the clicked button
-                                                    selectedInput.classList.add('selected'); // Mark only the clicked button as selected
-                                                }
-                                            }
 
 
                                             
